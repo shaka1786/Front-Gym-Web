@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import './TopBar.css';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.PNG';
 
 export default function TopBar() {
 return (
@@ -22,3 +22,5 @@ return (
     </div>
 );
 }
+
+
