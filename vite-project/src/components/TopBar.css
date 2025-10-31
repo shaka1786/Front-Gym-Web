@@ -1,0 +1,25 @@
+.top-bar {
+  background-color: #001f3f; /* azul oscuro */
+padding: 0.5rem 1rem;
+}
+
+.top-menu {
+list-style: none;
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 1.5rem;
+margin: 0;
+padding: 0;
+}
+
+.top-menu li {
+color: white;
+font-weight: bold;
+cursor: pointer;
+transition: color 0.3s ease;
+}
+
+.top-menu li:hover {
+  color: #800080; /* morado */
+}
