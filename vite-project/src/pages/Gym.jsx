@@ -12,7 +12,7 @@ return (
     minHeight: '100vh',
     padding: '6rem'
     }}>
-      {/* Título principal */}
+      
     <h1 style={{
         color: '#00013fff',
         fontSize: '2.5rem',
