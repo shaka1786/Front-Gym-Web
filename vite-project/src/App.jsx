@@ -1,4 +1,3 @@
-// App.jsx
 import React from 'react'; // <-- la runa perdida, ahora restaurada
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import TopBar from './components/TopBar';
@@ -6,6 +5,9 @@ import Home from './pages/Home';
 import Gym from './pages/Gym';
 import AdminPanel from './pages/AdminPanel';
 import { useAuth } from './hooks/useAuth';
+import Login from './components/Login'; // Asumiendo que existe
+import AdminRegister from './components/AdminRegister'; // Nuevo
+import ProtectedRoute from './components/ProtectedRoute'; // Nuevo
 
 function AppContent() {
   const location = useLocation();
@@ -23,6 +25,15 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/gym" element={<Gym />} />
         <Route path="/admin" element={<AdminPanel />} /> {/* Protegida por rol en el componente */}
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/admin/register"
+          element={
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <AdminRegister />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );
