@@ -1,3 +1,853 @@
+﻿Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\components\Navbar.css:
+.navbar {
+background-color: #f5f5f5;
+padding: 1rem;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-list {
+list-style: none;
+display: flex;
+justify-content: center;
+gap: 2rem;
+margin: 0;
+padding: 0;
+}
+
+.nav-list li a {
+text-decoration: none;
+color: #333;
+font-weight: bold;
+transition: color 0.3s ease;
+}
+
+.nav-list li a:hover {
+color: purple;
+}
+
+--- FIN DE Navbar.css ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\components\Navbar.jsx:
+import { Link } from 'react-router-dom';
+import './Navbar.css'; // Importamos los estilos
+
+export default function Navbar() {
+return (
+    <nav className="navbar">
+    <ul className="nav-list">
+        <li><Link to="/">Institucional</Link></li>
+        <li><Link to="/programas">Programas</Link></li>
+        <li><Link to="/gimnasio">Gimnasio</Link></li>
+        <li><Link to="/pastoral">Pastoral</Link></li>
+        <li><Link to="/idiomas">Idiomas</Link></li>
+    </ul>
+    </nav>
+);
+}
+
+--- FIN DE Navbar.jsx ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\components\Registro.jsx:
+import { useState } from 'react';
+
+export default function Registro() {
+const [formData, setFormData] = useState({
+    id_rol: '',
+    nombre: '',
+    correo: '',
+    contraseÃ±a: '',
+    programa: '',
+    eps: '',
+    peso: '',
+    horario: '',
+    peso_inicial: ''
+});
+
+const [registroExitoso, setRegistroExitoso] = useState(false);
+const [error, setError] = useState('');
+
+const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+};
+
+const handleSubmit = (e) => {
+    e.preventDefault();
+    const incompletos = Object.values(formData).some(campo => campo.trim() === '');
+    if (incompletos) {
+    setError('Por favor completa todos los campos.');
+    setRegistroExitoso(false);
+    } else {
+    setError('');
+    setRegistroExitoso(true);
+    }
+};
+
+const inputStyle = {
+    width: '100%',
+    padding: '0.8rem',
+    marginBottom: '1rem',
+    borderRadius: '6px',
+    border: '1px solid #ccc'
+};
+
+return (
+    <form onSubmit={handleSubmit}>
+    <input name="id_rol" placeholder="ID Rol" value={formData.id_rol} onChange={handleChange} style={inputStyle} />
+    <input name="nombre" placeholder="Nombre completo" value={formData.nombre} onChange={handleChange} style={inputStyle} />
+    <input name="correo" type="email" placeholder="Correo electrÃ³nico" value={formData.correo} onChange={handleChange} style={inputStyle} />
+    <input name="contraseÃ±a" type="password" placeholder="ContraseÃ±a" value={formData.contraseÃ±a} onChange={handleChange} style={inputStyle} />
+    <input name="programa" placeholder="Programa acadÃ©mico" value={formData.programa} onChange={handleChange} style={inputStyle} />
+    <input name="eps" placeholder="EPS" value={formData.eps} onChange={handleChange} style={inputStyle} />
+    <input name="peso" type="number" placeholder="Peso actual (kg)" value={formData.peso} onChange={handleChange} style={inputStyle} />
+    <input name="horario" placeholder="Horario laboral" value={formData.horario} onChange={handleChange} style={inputStyle} />
+    <input name="peso_inicial" type="number" placeholder="Peso inicial (kg)" value={formData.peso_inicial} onChange={handleChange} style={inputStyle} />
+    <button type="submit" style={{
+        backgroundColor: '#001f3f',
+        color: 'white',
+        padding: '0.8rem 1.5rem',
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer'
+    }}>
+        Enviar registro
+    </button>
+    {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
+    {registroExitoso && <p style={{ color: 'green', marginTop: '1rem', fontWeight: 'bold' }}>Â¡Registro exitoso!</p>}
+    </form>
+);
+}
+
+--- FIN DE Registro.jsx ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\components\TopBar.css:
+.top-bar {
+  background-color: #001f3f; /* azul oscuro */
+padding: 0.5rem 1rem;
+}
+
+.top-menu {
+list-style: none;
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 1.5rem;
+margin: 0;
+padding: 0;
+}
+
+.top-menu li {
+color: white;
+font-weight: bold;
+cursor: pointer;
+transition: color 0.3s ease;
+}
+
+.top-menu li:hover {
+  color: #800080; /* morado */
+}
+
+--- FIN DE TopBar.css ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\components\TopBar.jsx:
+import { Link } from 'react-router-dom';
+import './TopBar.css';
+import logo from '../assets/logo.PNG';
+
+export default function TopBar() {
+return (
+    <div className="top-bar">
+    <div className="top-left">
+        <img src={logo} alt="Logo institucional" className="logo" />
+    </div>
+    <ul className="top-menu">
+        <li>INSTITUCIONAL</li>
+        <li>PROGRAMAS</li>
+        <li>PORTAL DOCENTE</li>
+        <li>ADMISIONES</li>
+        <li><Link to="/gym">CAMPUS FIT</Link></li> {/* Solo este es funcional */}
+        <li>CARTERA</li>
+        <li>BIBLIOTECA</li>
+        <li>EMPRESAS</li>
+        <li>PASTORAL</li>
+    </ul>
+    </div>
+);
+}
+
+
+
+--- FIN DE TopBar.jsx ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\hooks\useAuth.js:
+import { useState, useEffect } from 'react';
+import jwtDecode from 'jwt-decode';
+import api from '../api';
+
+export const useAuth = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = jwtDecode(token);
+      fetchUser(); // Fetch /api/auth/me para datos frescos
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchUser = async () => {
+    try {
+      const res = await api.get('/auth/me');
+      setUser(res.data);
+    } catch (err) {
+      localStorage.removeItem('token');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (correo, password) => {
+    const res = await api.post('/auth/login', { correo_electronico: correo, password });
+    localStorage.setItem('token', res.data.token);
+    await fetchUser();
+  };
+
+  const register = async (data) => {
+    await api.post('/auth/register', data);
+    // Opcional: Auto-login despuÃ©s de register
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    window.location.href = '/gym';
+  };
+
+  return { user, loading, login, register, logout };
+};
+
+--- FIN DE useAuth.js ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\pages\AdminPanel.jsx:
+import { useState, useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import api from '../api';
+
+export default function AdminPanel() {
+  const { user, logout } = useAuth();
+  const [usuarios, setUsuarios] = useState([]);
+  const [sesiones, setSesiones] = useState([]);
+
+  useEffect(() => {
+    if (user?.rol !== 'Admin') {
+      window.location.href = '/gym'; // Redirige si no es Admin
+      return;
+    }
+    fetchUsuarios();
+    fetchSesiones();
+  }, [user]);
+
+  const fetchUsuarios = async () => {
+    const res = await api.get('/usuarios');
+    setUsuarios(res.data);
+  };
+
+  const fetchSesiones = async () => {
+    const res = await api.get('/sesiones');
+    setSesiones(res.data);
+  };
+
+  const deleteUser = async (id) => {
+    if (window.confirm('Â¿Eliminar usuario?')) {
+      await api.delete(`/usuarios/${id}`);
+      fetchUsuarios();
+    }
+  };
+
+  const deleteSesion = async (id) => {
+    if (window.confirm('Â¿Eliminar sesiÃ³n?')) {
+      await api.delete(`/sesiones/${id}`);
+      fetchSesiones();
+    }
+  };
+
+  return (
+    <div>
+      <h1>Panel Admin</h1>
+      <button onClick={logout}>Logout</button>
+      <h2>Usuarios</h2>
+      <ul>
+        {usuarios.map((u) => (
+          <li key={u.id}>
+            {u.nombre} ({u.rol.nombre}) - <button onClick={() => deleteUser(u.id)}>Eliminar</button>
+          </li>
+        ))}
+      </ul>
+      <h2>Sesiones</h2>
+      <ul>
+        {sesiones.map((s) => (
+          <li key={s.id}>
+            Entrenador: {s.Entrenador.nombre} - Horario: {s.HorarioLaboral.descripcion} - <button onClick={() => deleteSesion(s.id)}>Eliminar</button>
+          </li>
+        ))}
+      </ul>
+      {/* Agrega mÃ¡s: e.g., formulario para crear sesiones, tipos membresÃ­a, etc. */}
+    </div>
+  );
+}
+
+--- FIN DE AdminPanel.jsx ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\pages\Gym.jsx:
+
+import { useState } from 'react';
+import img1 from '../assets/image1.PNG';
+import img2 from '../assets/image2.PNG';
+import img3 from '../assets/image3.PNG';
+import Registro from '../components/Registro';
+import { useAuth } from '../hooks/useAuth';
+import api from '../api';
+
+export default function Gym() {
+  const { user, login, logout } = useAuth();
+  const [showRegistro, setShowRegistro] = useState(false);
+  const [loginData, setLoginData] = useState({ correo: '', password: '' });
+  const [error, setError] = useState('');
+  const [tiposMembresia, setTiposMembresia] = useState([]);
+  const [selectedPago, setSelectedPago] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      fetchTiposMembresia();
+    }
+  }, [user]);
+
+  const fetchTiposMembresia = async () => {
+    try {
+      const res = await api.get('/tipos-membresia');
+      setTiposMembresia(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleLoginChange = (e) => {
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await login(loginData.correo, loginData.password);
+      setError('');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error en login');
+    }
+  };
+
+  const handlePago = async () => {
+    if (!selectedPago) return;
+    try {
+      await api.post('/pagos', { id_usuario: user.id, id_pago: selectedPago, descripcion: 'Pago membresÃ­a' });
+      alert('Pago realizado!');
+    } catch (err) {
+      setError('Error en pago');
+    }
+  };
+
+  return (
+    <div style={{ /* estilos existentes */ }}>
+      <h1>Campus FIT</h1>
+      <div style={{ /* imÃ¡genes */ }}>
+        {/* ImÃ¡genes existentes */}
+      </div>
+      <div style={{ /* recuadro */ }}>
+        <h2>Bienvenido al entorno de bienestar</h2>
+        <p>{/* texto existente */}</p>
+
+        {!user ? (
+          <>
+            {/* Formulario de login */}
+            <form onSubmit={handleLogin}>
+              <input name="correo" type="email" placeholder="Correo electrÃ³nico" value={loginData.correo} onChange={handleLoginChange} /* estilos */ />
+              <input name="password" type="password" placeholder="ContraseÃ±a" value={loginData.password} onChange={handleLoginChange} /* estilos */ />
+              <button type="submit" /* estilos */>Entrar</button>
+            </form>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <p>Â¿No tienes cuenta?</p>
+            <button onClick={() => setShowRegistro(!showRegistro)} /* estilos */>Registrarse</button>
+            {showRegistro && <Registro />}
+          </>
+        ) : (
+          <>
+            <p>Bienvenido, {user.nombre} ({user.rol})</p>
+            <button onClick={logout}>Logout</button>
+            {/* SecciÃ³n de pagos */}
+            <h3>Realizar Pago de MembresÃ­a</h3>
+            <select value={selectedPago} onChange={(e) => setSelectedPago(e.target.value)}>
+              <option value="">Selecciona</option>
+              {tiposMembresia.map((tipo) => (
+                <option key={tipo.id} value={tipo.id}>{tipo.tiempo} dÃ­as - ${tipo.valor}</option>
+              ))}
+            </select>
+            <button onClick={handlePago}>Pagar</button>
+            {/* Si es Admin, link a /admin */}
+            {user.rol === 'Admin' && <a href="/admin">Panel Admin</a>}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+/*import { useState } from 'react';
+import img1 from '../assets/image1.PNG';
+import img2 from '../assets/image2.PNG';
+import img3 from '../assets/image3.PNG';
+import Registro from '../components/Registro';
+
+
+export default function Gym() {
+return (
+    <div style={{
+    backgroundColor: '#eae6ffff', 
+    minHeight: '100vh',
+    padding: '6rem'
+    }}>
+      {}
+    <h1 style={{
+        color: '#00013fff',
+        fontSize: '2.5rem',
+        textAlign: 'center',
+        marginBottom: '2rem'
+    }}>
+        Campus FIT
+    </h1>
+
+    <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '2rem',
+        marginBottom: '2rem'
+    }}>
+        <img src={img1} alt="Entrenamiento 1" style={{ width: '300px', borderRadius: '10px' }} />
+        <img src={img2} alt="Entrenamiento 2" style={{ width: '300px', borderRadius: '10px' }} />
+        <img src={img3} alt="Entrenamiento 3" style={{ width: '300px', borderRadius: '10px' }} />
+    </div>
+
+//      {}
+    <div style={{
+        backgroundColor: '#f0f8ff',
+        padding: '2rem',
+        borderRadius: '12px',
+        maxWidth: '700px',
+        margin: '0 auto',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+        textAlign: 'center'
+    }}>
+        <h2 style={{ color: '#001f3f', marginBottom: '1rem' }}>
+        Bienvenido al entorno de bienestar
+        </h2>
+        <p style={{
+        fontSize: '1.1rem',
+        lineHeight: '1.6',
+        color: '#333',
+        marginBottom: '2rem'
+        }}>
+        Te invitamos a formar parte de nuestro espacio de salud y movimiento.<br />
+        El gimnasio IUSH estÃ¡ diseÃ±ado para fortalecer cuerpo y mente,<br />
+        promoviendo hÃ¡bitos saludables y bienestar integral.<br />
+        Â¡Tu participaciÃ³n es el primer paso hacia una vida mÃ¡s activa!
+        </p>
+
+        {/* Formulario de inicio de sesiÃ³n }
+        <form>
+        <input
+            type="email"
+            placeholder="Correo electrÃ³nico"
+            style={{
+            width: '100%',
+            padding: '0.8rem',
+            marginBottom: '1rem',
+            borderRadius: '6px',
+            border: '1px solid #ccc'
+            }}
+        />
+        <input
+            type="password"
+            placeholder="ContraseÃ±a"
+            style={{
+            width: '100%',
+            padding: '0.8rem',
+            marginBottom: '1rem',
+            borderRadius: '6px',
+            border: '1px solid #ccc'
+            }}
+        />
+        <button type="submit" style={{
+            backgroundColor: '#001f3f',
+            color: 'white',
+            padding: '0.8rem 1.5rem',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer'
+        }}>
+            Entrar
+        </button>
+        </form>
+
+        {/* BotÃ³n de registro }
+        <p style={{ marginTop: '1rem' }}>Â¿No tienes cuenta?</p>
+        <button style={{
+        backgroundColor: '#800080',
+        color: 'white',
+        padding: '0.6rem 1.2rem',
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer'
+        }}>
+        Registrarse
+        </button>
+    </div>
+    </div>
+);
+}*/
+
+--- FIN DE Gym.jsx ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\pages\Home.jsx:
+import universidadImg from '../assets/universidad.PNG';
+import universidad2 from '../assets/universidad2.PNG';
+
+export default function Home() {
+return (
+    <div style={{ textAlign: 'left', marginTop: '2rem' }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+        <img
+        src={universidadImg}
+        alt="Universidad Salazar y Herrera"
+        style={{
+            width: '60%',
+            maxWidth: '1200px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+        }}
+        />
+        <img
+        src={universidad2}
+        alt="Campus Salazar y Herrera"
+        style={{
+            width: '40%',
+            maxWidth: '800px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            }}
+        />
+    </div>
+    </div>
+);
+}
+
+--- FIN DE Home.jsx ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\pages\TestApi.jsx:
+import { useEffect } from 'react';
+import axios from 'axios';
+
+export default function TestApi() {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/usuarios', {  // Corrige a '/api/usuarios' si es el caso (verifica rutas en backend)
+          headers: { Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiY29ycmVvX2VsZWN0cm9uaWNvIjoiYWRtaW5AZ3ltLmNvbSIsInJvbCI6IkFkbWluIiwiaWF0IjoxNzI5ODk3NjM2LCJleHAiOjE3Mjk5MDEyMzZ9.abcdef123456' }  // Reemplaza con TU_TOKEN real
+        });
+        console.log('Respuesta de la API:', response.data);  // Verifica aquÃ­ los usuarios
+      } catch (error) {
+        console.error('Error en la solicitud:', error.response?.data || error.message);
+      }
+    };
+
+    fetchData();  // Ejecuta al montar
+  }, []);
+
+  return (
+    <div>
+      <h1>Probando API de Usuarios</h1>
+      <p>Revisa la consola del navegador para ver la respuesta.</p>
+    </div>
+  );
+}
+
+--- FIN DE TestApi.jsx ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\api.js:
+import axios from 'axios';
+
+const API_URL = 'http://localhost:3000/api'; // Ajusta si backend corre en otro puerto/host
+
+const api = axios.create({
+  baseURL: API_URL,
+});
+
+// Interceptor para agregar token
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Manejo de errores global (e.g., 401 â†’ logout)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/gym'; // Redirige a login
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+
+--- FIN DE api.js ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\App.css:
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+--- FIN DE App.css ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\App.jsx:
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import TopBar from './components/TopBar';
+import Home from './pages/Home';
+import Gym from './pages/Gym';
+import AdminPanel from './pages/AdminPanel';
+import { useAuth } from './hooks/useAuth';
+
+function AppContent() {
+  const location = useLocation();
+  const { loading } = useAuth(); // Carga auth
+
+  if (loading) return <p>Cargando...</p>;
+
+  const showTopBar = location.pathname === '/';
+
+  return (
+    <>
+      {showTopBar && <TopBar />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/gym" element={<Gym />} />
+        <Route path="/admin" element={<AdminPanel />} /> {/* Protegida por rol en el componente */}
+      </Routes>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+/*import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import TopBar from './components/TopBar';
+import Home from './pages/Home';
+import Gym from './pages/Gym';
+
+function AppContent() {
+  const location = useLocation();
+
+  // Mostrar TopBar solo en la pÃ¡gina principal
+  const showTopBar = location.pathname === '/';
+
+  return (
+    <>
+      {showTopBar && <TopBar />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/gym" element={<Gym />} />
+      </Routes>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}*/
+
+--- FIN DE App.jsx ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\index.css:
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+--- FIN DE index.css ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\src\main.jsx:
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+--- FIN DE main.jsx ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\eslint.config.js:
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+
+--- FIN DE eslint.config.js ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\index.html:
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vite-project</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
+--- FIN DE index.html ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\package-lock.json:
 {
   "name": "vite-project",
   "version": "0.0.0",
@@ -3167,3 +4017,55 @@
     }
   }
 }
+
+--- FIN DE package-lock.json ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\package.json:
+{
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.13.1",
+    "jwt-decode": "^4.0.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.9.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.4",
+    "eslint": "^9.36.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.22",
+    "globals": "^16.4.0",
+    "vite": "^7.1.7"
+  }
+}
+
+--- FIN DE package.json ---\n
+Archivo: C:\Users\HP\Desktop\FRONT-BACK\Front-Gym-Web\vite-project\vite.config.js:
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    host: true, // escucha en 0.0.0.0
+    port: 5173, // opcional, pero asÃ­ te aseguras
+    allowedHosts: [
+      "visualstudiocode1.smh1786.space", // para poder publicarlo con dominio
+    ],
+  },
+});
+
+--- FIN DE vite.config.js ---\n

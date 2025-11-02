@@ -1,68 +1,83 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import api from '../api';
 
 export default function Registro() {
-const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     id_rol: '',
     nombre: '',
-    correo: '',
-    contraseña: '',
+    correo_electronico: '',
+    contrasena: '',
     programa: '',
     eps: '',
-    peso: '',
-    horario: '',
-    peso_inicial: ''
-});
+    peso_inicial: '',
+    id_horario_laboral: '', // Agregado para colaboradores/entrenadores
+    fecha_vencimiento: null,
+  });
 
-const [registroExitoso, setRegistroExitoso] = useState(false);
-const [error, setError] = useState('');
+  const [roles, setRoles] = useState([]); // Fetch roles desde API
+  const [horarios, setHorarios] = useState([]); // Fetch horarios
+  const [registroExitoso, setRegistroExitoso] = useState(false);
+  const [error, setError] = useState('');
 
-const handleChange = (e) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const rolesRes = await api.get('/roles'); // Asume ruta GET /api/roles en backend (agrega si no existe)
+        setRoles(rolesRes.data);
+        const horariosRes = await api.get('/horarios');
+        setHorarios(horariosRes.data);
+      } catch (err) {
+        setError('Error al cargar datos');
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-};
+  };
 
-const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const incompletos = Object.values(formData).some(campo => campo.trim() === '');
+    const incompletos = Object.values(formData).some((campo) => campo.trim() === '');
     if (incompletos) {
-    setError('Por favor completa todos los campos.');
-    setRegistroExitoso(false);
-    } else {
-    setError('');
-    setRegistroExitoso(true);
+      setError('Por favor completa todos los campos.');
+      return;
     }
-};
+    try {
+      await api.post('/auth/register', formData); // Envía a backend
+      setRegistroExitoso(true);
+      setError('');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error en registro');
+    }
+  };
 
-const inputStyle = {
-    width: '100%',
-    padding: '0.8rem',
-    marginBottom: '1rem',
-    borderRadius: '6px',
-    border: '1px solid #ccc'
-};
+  const inputStyle = { /* ... estilos existentes */ };
 
-return (
+  return (
     <form onSubmit={handleSubmit}>
-    <input name="id_rol" placeholder="ID Rol" value={formData.id_rol} onChange={handleChange} style={inputStyle} />
-    <input name="nombre" placeholder="Nombre completo" value={formData.nombre} onChange={handleChange} style={inputStyle} />
-    <input name="correo" type="email" placeholder="Correo electrónico" value={formData.correo} onChange={handleChange} style={inputStyle} />
-    <input name="contraseña" type="password" placeholder="Contraseña" value={formData.contraseña} onChange={handleChange} style={inputStyle} />
-    <input name="programa" placeholder="Programa académico" value={formData.programa} onChange={handleChange} style={inputStyle} />
-    <input name="eps" placeholder="EPS" value={formData.eps} onChange={handleChange} style={inputStyle} />
-    <input name="peso" type="number" placeholder="Peso actual (kg)" value={formData.peso} onChange={handleChange} style={inputStyle} />
-    <input name="horario" placeholder="Horario laboral" value={formData.horario} onChange={handleChange} style={inputStyle} />
-    <input name="peso_inicial" type="number" placeholder="Peso inicial (kg)" value={formData.peso_inicial} onChange={handleChange} style={inputStyle} />
-    <button type="submit" style={{
-        backgroundColor: '#001f3f',
-        color: 'white',
-        padding: '0.8rem 1.5rem',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: 'pointer'
-    }}>
-        Enviar registro
-    </button>
-    {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
-    {registroExitoso && <p style={{ color: 'green', marginTop: '1rem', fontWeight: 'bold' }}>¡Registro exitoso!</p>}
+      <select name="id_rol" value={formData.id_rol} onChange={handleChange} style={inputStyle}>
+        <option value="">Selecciona Rol</option>
+        {roles.map((rol) => (
+          <option key={rol.id} value={rol.id}>{rol.nombre}</option>
+        ))}
+      </select>
+      <input name="nombre" placeholder="Nombre completo" value={formData.nombre} onChange={handleChange} style={inputStyle} />
+      <input name="correo_electronico" type="email" placeholder="Correo electrónico" value={formData.correo_electronico} onChange={handleChange} style={inputStyle} />
+      <input name="contrasena" type="password" placeholder="Contrasena" value={formData.contrasena} onChange={handleChange} style={inputStyle} />
+      <input name="programa" placeholder="Programa académico" value={formData.programa} onChange={handleChange} style={inputStyle} />
+      <input name="eps" placeholder="EPS" value={formData.eps} onChange={handleChange} style={inputStyle} />
+      <input name="peso_inicial" type="number" placeholder="Peso inicial (kg)" value={formData.peso_inicial} onChange={handleChange} style={inputStyle} />
+      <select name="id_horario_laboral" value={formData.id_horario_laboral} onChange={handleChange} style={inputStyle}>
+        <option value="">Selecciona Horario (si aplica)</option>
+        {horarios.map((horario) => (
+          <option key={horario.id} value={horario.id}>{horario.descripcion}</option>
+        ))}
+      </select>
+      <button type="submit" /* estilos */>Enviar registro</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {registroExitoso && <p style={{ color: 'green' }}>¡Registro exitoso! Inicia sesión.</p>}
     </form>
-);
+  );
 }
