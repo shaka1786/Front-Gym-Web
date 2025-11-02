@@ -1,4 +1,5 @@
 import universidadImg from '../assets/universidad.PNG';
+import React from 'react';
 import universidad2 from '../assets/universidad2.PNG';
 
 export default function Home() {
