@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api'; // Ajusta si backend corre en otro puerto/host
+
+//const API_URL = 'http://localhost:3000/api'; // Ajusta si backend corre en otro puerto/host
 
 const api = axios.create({
-  baseURL: API_URL,
+  //baseURL: API_URL,
+  baseURL: '/api',
 });
 
 // Interceptor para agregar token
