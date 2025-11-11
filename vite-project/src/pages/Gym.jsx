@@ -8,11 +8,16 @@ import api from "../api";
 
 export default function Gym() {
   const { user, login, logout } = useAuth();
+
+  // Estado para el formulario de login
   const [loginData, setLoginData] = useState({ correo: "", password: "" });
   const [error, setError] = useState("");
+
+  // Estado para las membresías y el pago
   const [tiposMembresia, setTiposMembresia] = useState([]);
   const [selectedPago, setSelectedPago] = useState("");
 
+  // 🧠 Carga los tipos de membresía solo si el usuario está logueado
   useEffect(() => {
     if (user) fetchTiposMembresia();
   }, [user]);
@@ -26,6 +31,7 @@ export default function Gym() {
     }
   };
 
+  // 🧠 Manejo del formulario de login
   const handleLoginChange = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
   };
@@ -40,6 +46,7 @@ export default function Gym() {
     }
   };
 
+  // 🧠 Función para registrar un pago
   const handlePago = async () => {
     if (!selectedPago) return;
     try {
@@ -54,28 +61,59 @@ export default function Gym() {
     }
   };
 
+  // ✅ Cálculo de días restantes desde el frontend (por si el backend no lo envía)
+  const diasRestantes = user?.fecha_vencimiento
+    ? Math.ceil(
+        (new Date(user.fecha_vencimiento) - new Date()) / (1000 * 60 * 60 * 24)
+      )
+    : null;
+
+  // ✅ Formatear la fecha de vencimiento correctamente
+  const fechaFormateada = user?.fecha_vencimiento
+    ? new Date(user.fecha_vencimiento).toLocaleDateString("es-CO", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "Sin fecha registrada";
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col items-center py-10">
-      {/* Header */}
+      {/* 🏋️‍♂️ Header principal */}
       <h1 className="text-5xl font-bold text-center text-emerald-400 mb-8">
         🏋️‍♂️ Campus FIT
       </h1>
 
-      {/* Imagen principal */}
+      {/* 🖼️ Galería de imágenes */}
       <div className="flex gap-6 mb-10">
-        <img src={img1} alt="Gym 1" className="w-64 h-40 rounded-xl shadow-lg object-cover" />
-        <img src={img2} alt="Gym 2" className="w-64 h-40 rounded-xl shadow-lg object-cover" />
-        <img src={img3} alt="Gym 3" className="w-64 h-40 rounded-xl shadow-lg object-cover" />
+        <img
+          src={img1}
+          alt="Gym 1"
+          className="w-64 h-40 rounded-xl shadow-lg object-cover"
+        />
+        <img
+          src={img2}
+          alt="Gym 2"
+          className="w-64 h-40 rounded-xl shadow-lg object-cover"
+        />
+        <img
+          src={img3}
+          alt="Gym 3"
+          className="w-64 h-40 rounded-xl shadow-lg object-cover"
+        />
       </div>
 
-      {/* Contenedor principal */}
+      {/* 🧱 Contenedor principal */}
       <div className="bg-gray-900/80 rounded-2xl shadow-xl p-8 w-full max-w-md text-center backdrop-blur">
-        <h2 className="text-2xl font-semibold mb-2">Bienvenido al entorno de bienestar</h2>
+        <h2 className="text-2xl font-semibold mb-2">
+          Bienvenido al entorno de bienestar
+        </h2>
         <p className="text-gray-400 mb-6">
-          Tu salud es parte esencial de tu formación. ¡Actívate y disfruta del gimnasio de tu universidad!
+          Tu salud es parte esencial de tu formación. ¡Actívate y disfruta del
+          gimnasio de tu universidad!
         </p>
 
-        {/* Si no está logueado */}
+        {/* 🧍‍♂️ Si el usuario NO está logueado */}
         {!user ? (
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <input
@@ -104,15 +142,42 @@ export default function Gym() {
           </form>
         ) : (
           <>
-            {/* Usuario autenticado */}
+            {/* ✅ Usuario autenticado */}
             <div className="mb-4">
               <p className="text-lg">
                 Bienvenido,{" "}
                 <span className="font-semibold text-emerald-400">
-                  {user.nombre}
-                </span>{" "}
-                ({user.rol})
+                  {user.correo_electronico}
+                </span>
               </p>
+
+              {/* 📅 Fecha formateada correctamente */}
+              <p className="text-sm text-gray-400 mt-1">
+                {/* Verifica que haya una fecha válida antes de mostrarla */}
+                Tu membresía vence el:{" "}
+                {user.fecha_vencimiento
+                  ? new Date(user.fecha_vencimiento).toLocaleDateString(
+                      "es-CO",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )
+                  : "Sin fecha registrada"}
+              </p>
+
+              <p className="text-sm text-gray-400">
+                {/* Calcula los días restantes si existe la fecha */}
+                Días restantes:{" "}
+                {user.fecha_vencimiento
+                  ? Math.ceil(
+                      (new Date(user.fecha_vencimiento) - new Date()) /
+                        (1000 * 60 * 60 * 24)
+                    )
+                  : "—"}
+              </p>
+
               <button
                 onClick={logout}
                 className="mt-3 text-sm text-red-400 hover:text-red-500 underline"
@@ -121,7 +186,7 @@ export default function Gym() {
               </button>
             </div>
 
-            {/* Pagos */}
+            {/* 💳 Sección de pagos */}
             <h3 className="text-xl font-semibold mb-2">
               Realizar Pago de Membresía
             </h3>
@@ -144,7 +209,7 @@ export default function Gym() {
               Pagar
             </button>
 
-            {/* Admin */}
+            {/* 👑 Opciones solo para administrador */}
             {user.rol === "Admin" && (
               <div className="mt-6 flex flex-col gap-3">
                 <Link
