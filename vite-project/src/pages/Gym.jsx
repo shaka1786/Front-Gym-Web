@@ -24,10 +24,21 @@ export default function Gym() {
 
   const fetchTiposMembresia = async () => {
     try {
-      const res = await api.get("/tipoMembresia");
-      setTiposMembresia(res.data);
+      const token = localStorage.getItem("token"); // tu token guardado al login
+
+      const res = await api.get("/tipoMembresia", {
+        headers: {
+          Authorization: `Bearer ${token}`, // <- aquí va el token
+        },
+      });
+
+      console.log("Tipos de membresía del backend:", res.data);
+
+      // Filtramos solo las membresías que correspondan al rol del usuario
+      const filtradas = res.data.filter((tipo) => tipo.id_rol === user.id);
+      setTiposMembresia(filtradas);
     } catch (err) {
-      console.error(err);
+      console.error("Error obteniendo tipos de membresía:", err.response?.data || err.message);
     }
   };
 
@@ -50,18 +61,27 @@ export default function Gym() {
   const handlePago = async () => {
     if (!selectedPago) return;
     try {
-      await api.post("/pagos", {
-        id_usuario: user.id,
-        id_pago: selectedPago,
-        descripcion: "Pago membresía",
-      });
+      const token = localStorage.getItem("token");
+      await api.post(
+        "/pagos",
+        {
+          id_usuario: user.id,
+          id_pago: selectedPago,
+          descripcion: "Pago membresía",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       alert("✅ Pago realizado con éxito");
     } catch {
       setError("Error al realizar el pago");
     }
   };
 
-  // ✅ Cálculo de días restantes desde el frontend (por si el backend no lo envía)
+  // ✅ Cálculo de días restantes desde el frontend
   const diasRestantes = user?.fecha_vencimiento
     ? Math.ceil(
         (new Date(user.fecha_vencimiento) - new Date()) / (1000 * 60 * 60 * 24)
@@ -151,31 +171,11 @@ export default function Gym() {
                 </span>
               </p>
 
-              {/* 📅 Fecha formateada correctamente */}
               <p className="text-sm text-gray-400 mt-1">
-                {/* Verifica que haya una fecha válida antes de mostrarla */}
-                Tu membresía vence el:{" "}
-                {user.fecha_vencimiento
-                  ? new Date(user.fecha_vencimiento).toLocaleDateString(
-                      "es-CO",
-                      {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      }
-                    )
-                  : "Sin fecha registrada"}
+                Tu membresía vence: {fechaFormateada}
               </p>
-
               <p className="text-sm text-gray-400">
-                {/* Calcula los días restantes si existe la fecha */}
-                Días restantes:{" "}
-                {user.fecha_vencimiento
-                  ? Math.ceil(
-                      (new Date(user.fecha_vencimiento) - new Date()) /
-                        (1000 * 60 * 60 * 24)
-                    )
-                  : "—"}
+                Días restantes: {diasRestantes ?? "—"}
               </p>
 
               <button
