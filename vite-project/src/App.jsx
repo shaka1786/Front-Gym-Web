@@ -8,6 +8,7 @@ import { useAuth } from './hooks/useAuth';
 import Login from './components/Login'; // Asumiendo que existe
 import AdminRegister from './components/AdminRegister'; // Nuevo
 import ProtectedRoute from './components/ProtectedRoute'; // Nuevo
+import TrainerPanel from './pages/TrainerPanel';
 
 function AppContent() {
   const location = useLocation();
@@ -26,6 +27,14 @@ function AppContent() {
         <Route path="/gym" element={<Gym />} />
         <Route path="/admin" element={<AdminPanel />} /> {/* Protegida por rol en el componente */}
         <Route path="/login" element={<Login />} />
+        <Route 
+          path="/trainer" 
+          element={
+            <ProtectedRoute allowedRoles={['Entrenador']}>
+              <TrainerPanel />
+            </ProtectedRoute>
+          } 
+        />
         <Route
           path="/admin/register"
           element={

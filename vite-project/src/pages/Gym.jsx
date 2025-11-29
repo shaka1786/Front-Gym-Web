@@ -22,25 +22,22 @@ export default function Gym() {
     if (user) fetchTiposMembresia();
   }, [user]);
 
-  const fetchTiposMembresia = async () => {
-    try {
-      const token = localStorage.getItem("token"); // tu token guardado al login
+ const fetchTiposMembresia = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await api.get("/tipoMembresia", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      const res = await api.get("/tipoMembresia", {
-        headers: {
-          Authorization: `Bearer ${token}`, // <- aquí va el token
-        },
-      });
-
-      console.log("Tipos de membresía del backend:", res.data);
-
-      // Filtramos solo las membresías que correspondan al rol del usuario
-      const filtradas = res.data.filter((tipo) => tipo.id_rol === user.id);
-      setTiposMembresia(filtradas);
-    } catch (err) {
-      console.error("Error obteniendo tipos de membresía:", err.response?.data || err.message);
-    }
-  };
+    const filtradas = res.data.filter((tipo) => tipo.id_rol === user.id_rol);
+    
+    setTiposMembresia(filtradas);
+  } catch (err) {
+    console.error("Error obteniendo tipos de membresía:", err.response?.data || err.message);
+  }
+};
 
   // 🧠 Manejo del formulario de login
   const handleLoginChange = (e) => {
@@ -81,6 +78,7 @@ export default function Gym() {
     }
   };
 
+  
   // ✅ Cálculo de días restantes desde el frontend
   const diasRestantes = user?.fecha_vencimiento
     ? Math.ceil(
@@ -98,6 +96,7 @@ export default function Gym() {
     : "Sin fecha registrada";
 
   return (
+    
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col items-center py-10">
       {/* 🏋️‍♂️ Header principal */}
       <h1 className="text-5xl font-bold text-center text-emerald-400 mb-8">
@@ -210,24 +209,38 @@ export default function Gym() {
             </button>
 
             {/* 👑 Opciones solo para administrador */}
-            {user.rol === "Admin" && (
-              <div className="mt-6 flex flex-col gap-3">
-                <Link
-                  to="/admin"
-                  className="text-blue-400 hover:text-blue-500 underline"
-                >
-                  Ir al panel de administración
-                </Link>
-                <Link to="/admin/register">
-                  <button className="bg-blue-500 hover:bg-blue-600 w-full py-2 rounded-lg font-semibold">
-                    Registrar nuevo usuario
-                  </button>
-                </Link>
-              </div>
+{(user.rol === "Admin" || user.rol === "Entrenador") && (
+  <div className="mt-6 flex flex-col gap-3">
+    {user.rol === "Admin" && (
+      <>
+        <Link
+          to="/admin"
+          className="text-blue-400 hover:text-blue-500 underline"
+        >
+        </Link>
+        <Link to="/admin/register">
+          <button className="bg-blue-500 hover:bg-blue-600 w-full py-2 rounded-lg font-semibold">
+            Registrar nuevo usuario
+          </button>
+        </Link>
+      </>
+    )}
+    {user.rol === "Entrenador" && (
+      <Link to="/trainer">
+        <button className="bg-green-500 hover:bg-green-600 w-full py-2 rounded-lg font-semibold">
+          🏋️ Panel de Entrenador
+        </button>
+      </Link>
+    )}
+  </div>
+
             )}
           </>
         )}
       </div>
     </div>
+
+
   );
+  
 }

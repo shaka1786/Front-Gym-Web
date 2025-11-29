@@ -1,0 +1,1790 @@
+==================================================================
+RUTA: ./.gitignore
+==================================================================
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+
+
+==================================================================
+RUTA: ./.CodigoC
+==================================================================
+
+#!/bin/bash
+
+# ==========================================
+# CONFIGURACIÓN
+# ==========================================
+SALIDA="codigo_completo.txt"
+DIRECTORIO="${1:-.}" # Usa el directorio actual por defecto
+
+# ==========================================
+# LIMPIEZA INICIAL
+# ==========================================
+# Vaciar el archivo de salida si ya existe
+> "$SALIDA"
+
+echo "------------------------------------------------"
+echo "Iniciando recopilación de código..."
+echo "Directorio base: $DIRECTORIO"
+echo "Archivo de salida: $SALIDA"
+echo "------------------------------------------------"
+
+# ==========================================
+# COMANDO FIND (Lógica Principal - CORREGIDO)
+# ==========================================
+find "$DIRECTORIO" \
+    \( \
+        -name "node_modules" -o \
+        -name ".git" -o \
+        -name "dist" -o \
+        -name "build" -o \
+        -name "coverage" -o \
+        -name ".vscode" -o \
+        -name ".idea" -o \
+        -name "core" \
+    \) -prune -o \
+    -type f \
+    ! -name "package-lock.json" \
+    ! -name "yarn.lock" \
+    ! -name "pnpm-lock.yaml" \
+    ! -name "*.min.js" \
+    ! -name "*.map" \
+    ! -name "*.log" \
+    ! -name "*.png" \
+    ! -name "*.PNG" \
+    ! -name "*.jpg" \
+    ! -name "*.jpeg" \
+    ! -name "*.gif" \
+    ! -name "*.ico" \
+    ! -name "*.svg" \
+    ! -name ".DS_Store" \
+    ! -name "$SALIDA" \
+    ! -name "codigo_compilado_*.txt" \
+    ! -name "codigo_completo_*.txt" \
+    -print | while read -r archivo; do
+
+    # Estética del separador
+    echo "==================================================================" >> "$SALIDA"
+    echo "RUTA: $archivo" >> "$SALIDA"
+    echo "==================================================================" >> "$SALIDA"
+    echo "" >> "$SALIDA"
+    
+    # Contenido del archivo
+    cat "$archivo" >> "$SALIDA"
+    
+    # Espaciado entre archivos
+    echo -e "\n\n" >> "$SALIDA"
+
+    echo "Agregado: $archivo"
+done
+
+echo "------------------------------------------------"
+echo "¡PROCESO TERMINADO!"
+echo "Puedes encontrar todo el código en: $SALIDA"
+echo "------------------------------------------------"
+
+
+==================================================================
+RUTA: ./index.html
+==================================================================
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vite-project</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
+
+
+==================================================================
+RUTA: ./eslint.config.js
+==================================================================
+
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+
+
+
+==================================================================
+RUTA: ./vite.config.js
+==================================================================
+
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(),tailwindcss()],
+  server: {
+    host: true, // permite acceso desde la red (0.0.0.0)
+    port: 5173, // puerto de tu frontend
+    allowedHosts: [
+      "visualstudiocode1.smh1786.space", // tu dominio público
+    ],
+    proxy: {
+      '/api': {
+        target: 'http://192.168.1.35:3000', // ⚠️ tu backend real (puedes usar localhost si todo corre en el mismo PC)
+        changeOrigin: true,
+      },
+    },
+  },
+})
+
+
+
+
+
+==================================================================
+RUTA: ./package.json
+==================================================================
+
+{
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.17",
+    "axios": "^1.13.2",
+    "jwt-decode": "^4.0.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.9.4",
+    "tailwindcss": "^4.1.17"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.4",
+    "eslint": "^9.36.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.22",
+    "globals": "^16.4.0",
+    "vite": "^7.1.7"
+  }
+}
+
+
+
+==================================================================
+RUTA: ./README.md
+==================================================================
+
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+
+==================================================================
+RUTA: ./src/main.jsx
+==================================================================
+
+// main.jsx/
+/*
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import TestApi from "./pages/TestApi"; // <-- Importa tu componente de prueba
+
+createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <TestApi />  
+  </React.StrictMode>
+);
+*/
+
+import React from 'react';                   
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './index.css';
+
+const root = createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+
+==================================================================
+RUTA: ./src/App.jsx
+==================================================================
+
+import React from 'react'; // <-- la runa perdida, ahora restaurada
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import TopBar from './components/TopBar';
+import Home from './pages/Home';
+import Gym from './pages/Gym';
+import AdminPanel from './pages/AdminPanel';
+import { useAuth } from './hooks/useAuth';
+import Login from './components/Login'; // Asumiendo que existe
+import AdminRegister from './components/AdminRegister'; // Nuevo
+import ProtectedRoute from './components/ProtectedRoute'; // Nuevo
+import TrainerPanel from './pages/TrainerPanel';
+
+function AppContent() {
+  const location = useLocation();
+  const { loading } = useAuth(); // Carga del hechizo de autenticación
+
+  if (loading) return <p>Cargando...</p>;
+
+  // Muestra la TopBar solo en la raíz
+  const showTopBar = location.pathname === '/';
+
+  return (
+    <>
+      {showTopBar && <TopBar />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/gym" element={<Gym />} />
+        <Route path="/admin" element={<AdminPanel />} /> {/* Protegida por rol en el componente */}
+        <Route path="/login" element={<Login />} />
+        <Route 
+          path="/trainer" 
+          element={
+            <ProtectedRoute allowedRoles={['Entrenador']}>
+              <TrainerPanel />
+            </ProtectedRoute>
+          } 
+        />
+        <Route
+          path="/admin/register"
+          element={
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <AdminRegister />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+
+==================================================================
+RUTA: ./src/App.css
+==================================================================
+
+
+
+@import "tailwindcss";
+
+
+==================================================================
+RUTA: ./src/api.js
+==================================================================
+
+import axios from 'axios';
+
+
+//const API_URL = 'http://localhost:3000/api'; // Ajusta si backend corre en otro puerto/host
+
+const api = axios.create({
+  //baseURL: API_URL,
+  baseURL: '/api',
+});
+
+// Interceptor para agregar token
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Manejo de errores global (e.g., 401 → logout)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/gym'; // Redirige a login
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+
+
+==================================================================
+RUTA: ./src/pages/Home.jsx
+==================================================================
+
+import universidadImg from '../assets/universidad.PNG';
+import React from 'react';
+import universidad2 from '../assets/universidad2.PNG';
+
+export default function Home() {
+return (
+    <div style={{ textAlign: 'left', marginTop: '2rem' }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+        <img
+        src={universidadImg}
+        alt="Universidad Salazar y Herrera"
+        style={{
+            width: '60%',
+            maxWidth: '1200px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+        }}
+        />
+        <img
+        src={universidad2}
+        alt="Campus Salazar y Herrera"
+        style={{
+            width: '40%',
+            maxWidth: '800px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            }}
+        />
+    </div>
+    </div>
+);
+}
+
+
+==================================================================
+RUTA: ./src/pages/TrainerPanel.jsx
+==================================================================
+
+import { useState, useEffect } from 'react';
+import api from '../api';
+import { useAuth } from '../hooks/useAuth';
+
+export default function TrainerPanel() {
+  const { user } = useAuth();
+  const [emailBusqueda, setEmailBusqueda] = useState('');
+  const [usuarioEncontrado, setUsuarioEncontrado] = useState(null);
+
+  const [misHorarios, setMisHorarios] = useState([]); 
+  const [horarioSeleccionado, setHorarioSeleccionado] = useState(''); 
+  
+  const [mensaje, setMensaje] = useState({ texto: '', tipo: '' });
+  const [cargando, setCargando] = useState(false);
+
+  useEffect(() => {
+    const cargarHorarios = async () => {
+      try {
+        // Llamamos al nuevo endpoint
+        const res = await api.get('/entrenador/mis-horarios');
+        setMisHorarios(res.data);
+      } catch (error) {
+        console.error("Error cargando horarios:", error);
+        setMensaje({ texto: 'Error al cargar horarios', tipo: 'error' });
+      }
+    };
+    cargarHorarios();
+  }, []);
+
+  const handleBuscar = async (e) => {
+    e.preventDefault();
+    setMensaje({ texto: '', tipo: '' });
+    setCargando(true);
+    
+    try {
+      const res = await api.get(`/entrenador/buscar-usuario?email=${encodeURIComponent(emailBusqueda)}`);
+      setUsuarioEncontrado(res.data);
+      setMensaje({ 
+        texto: 'Usuario encontrado', 
+        tipo: 'success' 
+      });
+    } catch (error) {
+      setUsuarioEncontrado(null);
+      setMensaje({ 
+        texto: error.response?.data?.message || 'Usuario no encontrado', 
+        tipo: 'error' 
+      });
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  // Marcar asistencia
+const handleMarcarAsistencia = async () => {
+    if (!usuarioEncontrado || !horarioSeleccionado) {
+      setMensaje({ texto: 'Selecciona un horario y busca un usuario', tipo: 'error' });
+      return;
+    }
+
+    setCargando(true);
+    try {
+      const res = await api.post('/entrenador/asistencia', {
+        id_usuario: usuarioEncontrado.id,
+        id_horario: horarioSeleccionado // <-- Aquí el cambio
+      });
+      
+      setMensaje({ texto: `✅ ${res.data.message}`, tipo: 'success' });
+      
+      setTimeout(() => {
+        setEmailBusqueda('');
+        setUsuarioEncontrado(null);
+        // setHorarioSeleccionado(''); // Opcional: puedes dejar el horario seleccionado si vas a marcar a varios seguidos
+      }, 2000);
+    } catch (error) {
+      setMensaje({ texto: error.response?.data?.message || 'Error al marcar', tipo: 'error' });
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white p-8 flex flex-col items-center">
+      <h1 className="text-3xl font-bold text-emerald-400 mb-6">
+        🏋️ Panel de Entrenador
+      </h1>
+      
+      <div className="bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md">
+        
+        {/* Selección de sesión */}
+        <div className="mb-6">
+          <label className="block text-gray-400 mb-2">
+            1. Selecciona tu Horario:
+          </label>
+          <select 
+            className="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:border-emerald-500 outline-none"
+            value={horarioSeleccionado}
+            onChange={(e) => setHorarioSeleccionado(e.target.value)}
+            disabled={cargando}
+          >
+            <option value="">-- Seleccionar Horario --</option>
+            {misHorarios.map(horario => (
+              <option key={horario.id} value={horario.id}>
+                {horario.descripcion}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Buscar usuario por correo */}
+        <form onSubmit={handleBuscar} className="mb-6">
+          <label className="block text-gray-400 mb-2">
+            2. Buscar por Correo:
+          </label>
+          <div className="flex gap-2">
+            <input 
+              type="email" 
+              required
+              placeholder="usuario@correo.com"
+              className="flex-1 p-3 rounded bg-gray-700 text-white border border-gray-600 focus:border-emerald-500 outline-none"
+              value={emailBusqueda}
+              onChange={(e) => setEmailBusqueda(e.target.value)}
+              disabled={cargando}
+            />
+            <button 
+              type="submit" 
+              className="bg-blue-600 hover:bg-blue-700 px-4 rounded font-bold transition disabled:bg-blue-400"
+              disabled={cargando}
+            >
+              {cargando ? '⌛' : '🔍'}
+            </button>
+          </div>
+        </form>
+
+        {/* Usuario Encontrado */}
+        {usuarioEncontrado && (
+          <div className="bg-gray-700 p-4 rounded-lg mb-6 border border-emerald-500/30">
+            <p className="font-bold text-lg text-emerald-300">
+              {usuarioEncontrado.nombre}
+            </p>
+            <p className="text-sm text-gray-300">
+              {usuarioEncontrado.correo_electronico}
+            </p>
+            {usuarioEncontrado.programa && (
+              <p className="text-sm text-gray-300">
+                Programa: {usuarioEncontrado.programa}
+              </p>
+            )}
+            <p className="text-xs text-gray-400 mt-1">
+              Vence: {usuarioEncontrado.fecha_vencimiento 
+                ? new Date(usuarioEncontrado.fecha_vencimiento).toLocaleDateString() 
+                : 'Sin fecha'}
+            </p>
+            
+            <button 
+              onClick={handleMarcarAsistencia}
+              disabled={cargando || !horarioSeleccionado}
+              className="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 py-2 rounded font-bold text-white transition disabled:bg-gray-600 disabled:cursor-not-allowed"
+            >
+              {cargando ? 'Marcando...' : '✅ Marcar Asistencia'}
+            </button>
+          </div>
+        )}
+
+        {/* Mensajes */}
+        {mensaje.texto && (
+          <div className={`p-3 rounded text-center ${
+            mensaje.tipo === 'error' 
+              ? 'bg-red-500/20 text-red-200 border border-red-500/30' 
+              : 'bg-green-500/20 text-green-200 border border-green-500/30'
+          }`}>
+            {mensaje.texto}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+==================================================================
+RUTA: ./src/pages/TestApi.jsx
+==================================================================
+
+import { useEffect } from 'react';
+import React from 'react';
+import axios from 'axios';
+
+export default function TestApi() {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/api/usuarios', {  // Corrige a '/api/usuarios' si es el caso (verifica rutas en backend)
+          headers: { Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiY29ycmVvX2VsZWN0cm9uaWNvIjoiYWRtaW5AZ3ltLmNvbSIsInJvbCI6IkFkbWluIiwiaWF0IjoxNzYyMDYwNDQ2LCJleHAiOjE3NjIwNjQwNDZ9.JtoU_MMwo9xRfH3LOeg0wEztOiju99LtUKf0ah0VlQM' }  // Reemplaza con TU_TOKEN real
+        });
+        console.log('Respuesta de la API:', response.data);  // Verifica aquí los usuarios
+      } catch (error) {
+        console.error('Error en la solicitud:', error.response?.data || error.message);
+      }
+    };
+
+    fetchData();  // Ejecuta al montar
+  }, []);
+
+  return (
+    <div>
+      <h1>Probando API de Usuarios</h1>
+      <p>Revisa la consola del navegador para ver la respuesta.</p>
+    </div>
+  );
+}
+
+
+==================================================================
+RUTA: ./src/pages/Gym.jsx
+==================================================================
+
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import img1 from "../assets/image1.PNG";
+import img2 from "../assets/image2.PNG";
+import img3 from "../assets/image3.PNG";
+import { useAuth } from "../hooks/useAuth";
+import api from "../api";
+
+export default function Gym() {
+  const { user, login, logout } = useAuth();
+
+  // Estado para el formulario de login
+  const [loginData, setLoginData] = useState({ correo: "", password: "" });
+  const [error, setError] = useState("");
+
+  // Estado para las membresías y el pago
+  const [tiposMembresia, setTiposMembresia] = useState([]);
+  const [selectedPago, setSelectedPago] = useState("");
+
+  // 🧠 Carga los tipos de membresía solo si el usuario está logueado
+  useEffect(() => {
+    if (user) fetchTiposMembresia();
+  }, [user]);
+
+  const fetchTiposMembresia = async () => {
+    try {
+      const token = localStorage.getItem("token"); // tu token guardado al login
+
+      const res = await api.get("/tipoMembresia", {
+        headers: {
+          Authorization: `Bearer ${token}`, // <- aquí va el token
+        },
+      });
+
+      console.log("Tipos de membresía del backend:", res.data);
+
+      // Filtramos solo las membresías que correspondan al rol del usuario
+      const filtradas = res.data.filter((tipo) => tipo.id_rol === user.id_rol);
+      setTiposMembresia(filtradas);
+    } catch (err) {
+      console.error("Error obteniendo tipos de membresía:", err.response?.data || err.message);
+    }
+  };
+
+  // 🧠 Manejo del formulario de login
+  const handleLoginChange = (e) => {
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await login(loginData.correo, loginData.password);
+      setError("");
+    } catch (err) {
+      setError(err.response?.data?.message || "Error en login");
+    }
+  };
+
+  // 🧠 Función para registrar un pago
+  const handlePago = async () => {
+    if (!selectedPago) return;
+    try {
+      const token = localStorage.getItem("token");
+      await api.post(
+        "/pagos",
+        {
+          id_usuario: user.id,
+          id_pago: selectedPago,
+          descripcion: "Pago membresía",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("✅ Pago realizado con éxito");
+    } catch {
+      setError("Error al realizar el pago");
+    }
+  };
+
+  // ✅ Cálculo de días restantes desde el frontend
+  const diasRestantes = user?.fecha_vencimiento
+    ? Math.ceil(
+        (new Date(user.fecha_vencimiento) - new Date()) / (1000 * 60 * 60 * 24)
+      )
+    : null;
+
+  // ✅ Formatear la fecha de vencimiento correctamente
+  const fechaFormateada = user?.fecha_vencimiento
+    ? new Date(user.fecha_vencimiento).toLocaleDateString("es-CO", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "Sin fecha registrada";
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col items-center py-10">
+      {/* 🏋️‍♂️ Header principal */}
+      <h1 className="text-5xl font-bold text-center text-emerald-400 mb-8">
+        🏋️‍♂️ Campus FIT
+      </h1>
+
+      {/* 🖼️ Galería de imágenes */}
+      <div className="flex gap-6 mb-10">
+        <img
+          src={img1}
+          alt="Gym 1"
+          className="w-64 h-40 rounded-xl shadow-lg object-cover"
+        />
+        <img
+          src={img2}
+          alt="Gym 2"
+          className="w-64 h-40 rounded-xl shadow-lg object-cover"
+        />
+        <img
+          src={img3}
+          alt="Gym 3"
+          className="w-64 h-40 rounded-xl shadow-lg object-cover"
+        />
+      </div>
+
+      {/* 🧱 Contenedor principal */}
+      <div className="bg-gray-900/80 rounded-2xl shadow-xl p-8 w-full max-w-md text-center backdrop-blur">
+        <h2 className="text-2xl font-semibold mb-2">
+          Bienvenido al entorno de bienestar
+        </h2>
+        <p className="text-gray-400 mb-6">
+          Tu salud es parte esencial de tu formación. ¡Actívate y disfruta del
+          gimnasio de tu universidad!
+        </p>
+
+        {/* 🧍‍♂️ Si el usuario NO está logueado */}
+        {!user ? (
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <input
+              name="correo"
+              type="email"
+              placeholder="Correo electrónico"
+              value={loginData.correo}
+              onChange={handleLoginChange}
+              className="p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+            <input
+              name="password"
+              type="password"
+              placeholder="Contraseña"
+              value={loginData.password}
+              onChange={handleLoginChange}
+              className="p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+            <button
+              type="submit"
+              className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 rounded-lg transition-all"
+            >
+              Iniciar sesión
+            </button>
+            {error && <p className="text-red-400">{error}</p>}
+          </form>
+        ) : (
+          <>
+            {/* ✅ Usuario autenticado */}
+            <div className="mb-4">
+              <p className="text-lg">
+                Bienvenido,{" "}
+                <span className="font-semibold text-emerald-400">
+                  {user.correo_electronico}
+                </span>
+              </p>
+
+              <p className="text-sm text-gray-400 mt-1">
+                Tu membresía vence: {fechaFormateada}
+              </p>
+              <p className="text-sm text-gray-400">
+                Días restantes: {diasRestantes ?? "—"}
+              </p>
+
+              <button
+                onClick={logout}
+                className="mt-3 text-sm text-red-400 hover:text-red-500 underline"
+              >
+                Cerrar sesión
+              </button>
+            </div>
+
+            {/* 💳 Sección de pagos */}
+            <h3 className="text-xl font-semibold mb-2">
+              Realizar Pago de Membresía
+            </h3>
+            <select
+              value={selectedPago}
+              onChange={(e) => setSelectedPago(e.target.value)}
+              className="w-full p-3 mb-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="">Selecciona una membresía</option>
+              {tiposMembresia.map((tipo) => (
+                <option key={tipo.id} value={tipo.id}>
+                  {tipo.tiempo} días — ${tipo.valor}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={handlePago}
+              className="bg-emerald-500 hover:bg-emerald-600 w-full py-2 rounded-lg font-semibold transition-all"
+            >
+              Pagar
+            </button>
+
+            {/* 👑 Opciones solo para administrador */}
+{(user.rol === "Admin" || user.rol === "Entrenador") && (
+  <div className="mt-6 flex flex-col gap-3">
+    {user.rol === "Admin" && (
+      <>
+        <Link
+          to="/admin"
+          className="text-blue-400 hover:text-blue-500 underline"
+        >
+        </Link>
+        <Link to="/admin/register">
+          <button className="bg-blue-500 hover:bg-blue-600 w-full py-2 rounded-lg font-semibold">
+            Registrar nuevo usuario
+          </button>
+        </Link>
+      </>
+    )}
+    {user.rol === "Entrenador" && (
+      <Link to="/trainer">
+        <button className="bg-green-500 hover:bg-green-600 w-full py-2 rounded-lg font-semibold">
+          🏋️ Panel de Entrenador
+        </button>
+      </Link>
+    )}
+  </div>
+
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+
+==================================================================
+RUTA: ./src/pages/AdminPanel.jsx
+==================================================================
+
+// import { useState, useEffect } from 'react';
+// import React from 'react';
+// import { useAuth } from '../hooks/useAuth';
+// import api from '../api';
+
+
+// export default function AdminPanel() {
+//   const { user, logout } = useAuth();
+//   const [usuarios, setUsuarios] = useState([]);
+//   const [sesiones, setSesiones] = useState([]);
+
+//   useEffect(() => {
+//     if (user?.rol !== 'Admin') {
+//       window.location.href = '/gym'; // Redirige si no es Admin
+//       return;
+//     }
+//     fetchUsuarios();
+//     fetchSesiones();
+//   }, [user]);
+
+//   const fetchUsuarios = async () => {
+//     const res = await api.get('/usuarios');
+//     setUsuarios(res.data);
+//   };
+
+//   const fetchSesiones = async () => {
+//     const res = await api.get('/sesiones');
+//     setSesiones(res.data);
+//   };
+
+//   const deleteUser = async (id) => {
+//     if (window.confirm('¿Eliminar usuario?')) {
+//       await api.delete(`/usuarios/${id}`);
+//       fetchUsuarios();
+//     }
+//   };
+
+//   const deleteSesion = async (id) => {
+//     if (window.confirm('¿Eliminar sesión?')) {
+//       await api.delete(`/sesiones/${id}`);
+//       fetchSesiones();
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <h1>Panel Admin</h1>
+//       <button onClick={logout}>Logout</button>
+//       <h2>Usuarios</h2>
+//       <ul>
+//         {usuarios.map((u) => (
+//           <li key={u.id}>
+//             {u.nombre} ({u.rol.nombre}) - <button onClick={() => deleteUser(u.id)}>Eliminar</button>
+//           </li>
+//         ))}
+//       </ul>
+//       <h2>Sesiones</h2>
+//       <ul>
+//         {sesiones.map((s) => (
+//           <li key={s.id}>
+//             Entrenador: {s.Entrenador.nombre} - Horario: {s.HorarioLaboral.descripcion} - <button onClick={() => deleteSesion(s.id)}>Eliminar</button>
+//           </li>
+//         ))}
+//       </ul>
+//       {/* Agrega más: e.g., formulario para crear sesiones, tipos membresía, etc. */}
+//     </div>
+//   );
+// }
+
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const AdminRegister = () => {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    correo_electronico: '',
+    contrasena: '',
+    id_rol: '',
+    id_horario_laboral: '',
+    programa: '',
+    eps: '',
+    peso_inicial: ''
+  });
+  const [roles, setRoles] = useState([]);           // siempre array
+  const [horarios, setHorarios] = useState([]);     // siempre array
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+
+        // Trae roles
+        const rolesRes = await axios.get('/api/rol', config);
+        // Aseguramos que roles sea un array (manejo de formatos distintos)
+        const rolesData = Array.isArray(rolesRes.data)
+          ? rolesRes.data
+          : (rolesRes.data?.roles || []);
+        setRoles(rolesData);
+
+        // Trae horarios (similar protección)
+        const horariosRes = await axios.get('/api/horarios', config);
+        const horariosData = Array.isArray(horariosRes.data)
+          ? horariosRes.data
+          : (horariosRes.data?.horarios || []);
+        setHorarios(horariosData);
+
+      } catch (err) {
+        console.error('Error fetching roles/horarios:', err);
+        setError('Error al cargar datos');
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    // Validaciones frontend básicas
+    if (!formData.nombre || !formData.correo_electronico || !formData.contrasena || !formData.id_rol) {
+      return setError('Campos obligatorios faltantes');
+    }
+    if (formData.id_rol === '2' && !formData.programa) {
+      return setError('Programa requerido para Estudiantes');
+    }
+    if (formData.id_rol === '7' && !formData.id_horario_laboral) {
+      return setError('Horario laboral requerido para Entrenadores');
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      const res = await axios.post('/api/auth/usuarios', formData, config);
+      setSuccess('Usuario registrado exitosamente');
+      // limpieza de formulario opcional:
+      setFormData({
+        nombre: '',
+        correo_electronico: '',
+        contrasena: '',
+        id_rol: '',
+        id_horario_laboral: '',
+        programa: '',
+        eps: '',
+        peso_inicial: ''
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error al registrar');
+    }
+  };
+
+  const isEstudiante = formData.id_rol === '2';
+  const isEntrenador = formData.id_rol === '7';
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="nombre" value={formData.nombre} onChange={handleChange} placeholder="Nombre" required />
+      <input name="correo_electronico" type="email" value={formData.correo_electronico} onChange={handleChange} placeholder="Correo" required />
+      <input name="contrasena" type="password" value={formData.contrasena} onChange={handleChange} placeholder="Contraseña" required />
+      
+      <select name="id_rol" value={formData.id_rol} onChange={handleChange} required>
+        <option value="">Selecciona Rol</option>
+        {/* Protegemos con Array.isArray por si acaso */}
+        {Array.isArray(roles) && roles.map((rol) => (
+          <option key={rol.id} value={rol.id}>{rol.nombre}</option>
+        ))}
+      </select>
+      
+      {isEntrenador && (
+        <select name="id_horario_laboral" value={formData.id_horario_laboral} onChange={handleChange} required>
+          <option value="">Selecciona Horario</option>
+          {Array.isArray(horarios) && horarios.map((horario) => (
+            <option key={horario.id} value={horario.id}>{horario.descripcion}</option>
+          ))}
+        </select>
+      )}
+      
+      {isEstudiante && (
+        <input name="programa" value={formData.programa} onChange={handleChange} placeholder="Programa Académico" required />
+      )}
+      
+      <input name="eps" value={formData.eps} onChange={handleChange} placeholder="EPS" />
+      <input name="peso_inicial" type="number" step="0.01" value={formData.peso_inicial} onChange={handleChange} placeholder="Peso Inicial" />
+      
+      <button type="submit">Registrar</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {success && <p style={{ color: 'green' }}>{success}</p>}
+    </form>
+  );
+};
+
+export default AdminRegister;
+
+
+
+==================================================================
+RUTA: ./src/components/TopBar.css
+==================================================================
+
+.top-bar {
+  background-color: #001f3f; /* azul oscuro */
+padding: 0.5rem 1rem;
+}
+
+.top-menu {
+list-style: none;
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 1.5rem;
+margin: 0;
+padding: 0;
+}
+
+.top-menu li {
+color: white;
+font-weight: bold;
+cursor: pointer;
+transition: color 0.3s ease;
+}
+
+.top-menu li:hover {
+  color: #800080; /* morado */
+}
+
+
+
+==================================================================
+RUTA: ./src/components/Navbar.jsx
+==================================================================
+
+import { Link } from 'react-router-dom';
+import './Navbar.css'; // Importamos los estilos
+
+export default function Navbar() {
+return (
+    <nav className="navbar">
+    <ul className="nav-list">
+        <li><Link to="/">Institucional</Link></li>
+        <li><Link to="/programas">Programas</Link></li>
+        <li><Link to="/gimnasio">Gimnasio</Link></li>
+        <li><Link to="/pastoral">Pastoral</Link></li>
+        <li><Link to="/idiomas">Idiomas</Link></li>
+    </ul>
+    </nav>
+);
+}
+
+
+
+==================================================================
+RUTA: ./src/components/Navbar.css
+==================================================================
+
+.navbar {
+background-color: #f5f5f5;
+padding: 1rem;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-list {
+list-style: none;
+display: flex;
+justify-content: center;
+gap: 2rem;
+margin: 0;
+padding: 0;
+}
+
+.nav-list li a {
+text-decoration: none;
+color: #333;
+font-weight: bold;
+transition: color 0.3s ease;
+}
+
+.nav-list li a:hover {
+color: purple;
+}
+
+
+
+==================================================================
+RUTA: ./src/components/AdminRegister.jsx
+==================================================================
+
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../api';
+
+export default function AdminRegister() {
+  const navigate = useNavigate();
+
+  // Estado del formulario de registro
+  const [formData, setFormData] = useState({
+    nombre: '',
+    correo_electronico: '',
+    contrasena: '',
+    id_rol: '',
+    id_horarios: [], // array de IDs de horarios, para entrenadores
+    programa: '',    // para estudiantes
+    eps: '',
+    peso_inicial: ''
+  });
+
+  // Listado de roles y horarios obtenidos del backend
+  const [roles, setRoles] = useState([]);
+  const [horarios, setHorarios] = useState([]);
+
+  // Mensajes de error y éxito
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  // 🧠 Carga roles y horarios desde el backend cuando el componente se monta
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const rolesRes = await api.get('/roles');
+        setRoles(Array.isArray(rolesRes.data) ? rolesRes.data : []);
+      } catch {
+        setError('Error cargando roles');
+      }
+
+      try {
+        const horariosRes = await api.get('/horarios');
+        setHorarios(Array.isArray(horariosRes.data) ? horariosRes.data : []);
+      } catch {
+        setError('Error cargando horarios');
+      }
+    };
+    fetchData();
+  }, []);
+
+  // 📝 Maneja cambios en inputs y select
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // 📝 Maneja checkboxes de horarios (solo para entrenadores)
+  const handleCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+    setFormData(prev => {
+      const arr = Array.isArray(prev.id_horarios) ? prev.id_horarios : [];
+      if (checked) return { ...prev, id_horarios: [...arr, value] };
+      else return { ...prev, id_horarios: arr.filter(v => v !== value) };
+    });
+  };
+
+  // 🧾 Envía el formulario al backend
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    // Validaciones básicas
+    if (!formData.nombre || !formData.correo_electronico || !formData.contrasena || !formData.id_rol) {
+      return setError('Campos obligatorios faltantes');
+    }
+
+    try {
+      await api.post('/usuarios', formData);
+      setSuccess('Usuario registrado exitosamente ✅');
+      // Resetea el formulario
+      setFormData({
+        nombre: '',
+        correo_electronico: '',
+        contrasena: '',
+        id_rol: '',
+        id_horarios: [],
+        programa: '',
+        eps: '',
+        peso_inicial: ''
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error al registrar usuario');
+    }
+  };
+
+  // 🔹 Determina si se muestra el campo de programa o horarios según rol
+  const isEstudiante = formData.id_rol === '2';
+  const isEntrenador = formData.id_rol === '7';
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex justify-center items-center p-6">
+      <div className="bg-gray-900/80 p-6 rounded-2xl shadow-xl w-full max-w-lg text-white backdrop-blur relative">
+        
+        {/* Botón para volver a la página anterior */}
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded-lg font-semibold transition-all mb-4"
+        >
+          ← Volver
+        </button>
+
+        {/* Título del formulario */}
+        <h2 className="text-3xl font-bold text-emerald-400 mb-4 text-center">
+          Registrar Nuevo Usuario
+        </h2>
+
+        {/* Formulario de registro */}
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          {/* Campos de texto básicos */}
+          <input
+            name="nombre"
+            value={formData.nombre}
+            onChange={handleChange}
+            placeholder="Nombre completo"
+            required
+            className="p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+          <input
+            name="correo_electronico"
+            type="email"
+            value={formData.correo_electronico}
+            onChange={handleChange}
+            placeholder="Correo electrónico"
+            required
+            className="p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+          <input
+            name="contrasena"
+            type="password"
+            value={formData.contrasena}
+            onChange={handleChange}
+            placeholder="Contraseña"
+            required
+            className="p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+
+          {/* Select de rol */}
+          <select
+            name="id_rol"
+            value={formData.id_rol}
+            onChange={handleChange}
+            required
+            className="p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          >
+            <option value="">Selecciona Rol</option>
+            {roles.map(rol => (
+              <option key={rol.id} value={rol.id}>{rol.nombre}</option>
+            ))}
+          </select>
+
+          {/* Campo adicional solo para estudiantes */}
+          {isEstudiante && (
+            <input
+              name="programa"
+              value={formData.programa}
+              onChange={handleChange}
+              placeholder="Programa Académico"
+              required
+              className="p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          )}
+
+          {/* Checkbox de horarios solo para entrenadores */}
+          {isEntrenador && (
+            <div className="border border-gray-700 p-3 rounded-lg">
+              <p className="mb-2 font-semibold">Horarios disponibles:</p>
+              {horarios.map(h => (
+                <label key={h.id} className="flex items-center gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    value={h.id}
+                    checked={formData.id_horarios.includes(String(h.id))}
+                    onChange={handleCheckboxChange}
+                    className="accent-emerald-500"
+                  />
+                  {h.descripcion}
+                </label>
+              ))}
+            </div>
+          )}
+
+          {/* Otros campos opcionales */}
+          <input
+            name="eps"
+            value={formData.eps}
+            onChange={handleChange}
+            placeholder="EPS"
+            className="p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+          <input
+            name="peso_inicial"
+            type="number"
+            step="0.01"
+            value={formData.peso_inicial}
+            onChange={handleChange}
+            placeholder="Peso Inicial"
+            className="p-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+
+          {/* Botón de enviar */}
+          <button
+            type="submit"
+            className="bg-emerald-500 hover:bg-emerald-600 py-3 rounded-lg font-semibold mt-2 transition-all"
+          >
+            Registrar
+          </button>
+        </form>
+
+        {/* Mensajes de error o éxito */}
+        {error && <p className="text-red-400 mt-3 text-center">{error}</p>}
+        {success && <p className="text-green-400 mt-3 text-center">{success}</p>}
+      </div>
+    </div>
+  );
+}
+
+
+
+==================================================================
+RUTA: ./src/components/Login.jsx
+==================================================================
+
+import { useState } from "react";
+import axios from "axios";
+
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [diasRestantes, setDiasRestantes] = useState(null);
+  const [fechaVencimiento, setFechaVencimiento] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("/api/auth/login", {
+        correo_electronico: email,
+        password,
+      });
+
+      const { token, fecha_vencimiento, dias_restantes } = res.data;
+
+      // Guardar token y datos en localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("fecha_vencimiento", fecha_vencimiento);
+      localStorage.setItem("dias_restantes", dias_restantes);
+
+      // Mostrar los datos
+      setFechaVencimiento(fecha_vencimiento);
+      setDiasRestantes(dias_restantes);
+      setError("");
+
+      // Redirigir si quieres (por ejemplo, a dashboard)
+      // window.location.href = "/admin/register";
+    } catch (err) {
+      setError(err.response?.data?.message || "Error en login");
+    }
+  };
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Correo"
+          required
+        />
+        <br />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Contraseña"
+          required
+        />
+        <br />
+        <button type="submit">Iniciar sesión</button>
+      </form>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {diasRestantes !== null && (
+        <div style={{ marginTop: "20px" }}>
+          <p>📅 Fecha de vencimiento: {new Date(fechaVencimiento).toLocaleDateString()}</p>
+          <p>⏳ Días restantes: {diasRestantes}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Login;
+
+
+
+==================================================================
+RUTA: ./src/components/ProtectedRoute.jsx
+==================================================================
+
+import { Navigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const token = localStorage.getItem('token');
+  if (!token) return <Navigate to="/login" />;
+
+  try {
+    const decoded = jwtDecode(token);
+    if (!allowedRoles.includes(decoded.rol)) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  } catch (error) {
+    localStorage.removeItem('token');
+    return <Navigate to="/login" />;
+  }
+};
+
+export default ProtectedRoute;
+
+
+==================================================================
+RUTA: ./src/components/TopBar.jsx
+==================================================================
+
+import { Link } from 'react-router-dom';
+import './TopBar.css';
+import logo from '../assets/logo.PNG';
+import React from 'react';
+
+export default function TopBar() {
+return (
+    <div className="top-bar">
+    <div className="top-left">
+        <img src={logo} alt="Logo institucional" className="logo" />
+    </div>
+    <ul className="top-menu">
+        <li>INSTITUCIONAL</li>
+        <li>PROGRAMAS</li>
+        <li>PORTAL DOCENTE</li>
+        <li>ADMISIONES</li>
+        <li><Link to="/gym">CAMPUS FIT</Link></li> {/* Solo este es funcional */}
+        <li>CARTERA</li>
+        <li>BIBLIOTECA</li>
+        <li>EMPRESAS</li>
+        <li>PASTORAL</li>
+    </ul>
+    </div>
+);
+}
+
+
+==================================================================
+RUTA: ./src/components/Registro.jsx
+==================================================================
+
+import { useState, useEffect } from 'react';
+import api from '../api';
+
+export default function Registro() {
+  const [formData, setFormData] = useState({
+    id_rol: '',
+    nombre: '',
+    correo_electronico: '',
+    contrasena: '',
+    programa: '',
+    eps: '',
+    peso_inicial: '',
+    id_horario_laboral: '', // Agregado para colaboradores/entrenadores
+    fecha_vencimiento: null,
+  });
+
+  const [roles, setRoles] = useState([]); // Fetch roles desde API
+  const [horarios, setHorarios] = useState([]); // Fetch horarios
+  const [registroExitoso, setRegistroExitoso] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const rolesRes = await api.get('/roles'); // Asume ruta GET /api/roles en backend (agrega si no existe)
+        setRoles(rolesRes.data);
+        const horariosRes = await api.get('/horarios');
+        setHorarios(horariosRes.data);
+      } catch (err) {
+        setError('Error al cargar datos');
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const incompletos = Object.values(formData).some((campo) => campo.trim() === '');
+    if (incompletos) {
+      setError('Por favor completa todos los campos.');
+      return;
+    }
+    try {
+      await api.post('/auth/register', formData); // Envía a backend
+      setRegistroExitoso(true);
+      setError('');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error en registro');
+    }
+  };
+
+  const inputStyle = { /* ... estilos existentes */ };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <select name="id_rol" value={formData.id_rol} onChange={handleChange} style={inputStyle}>
+        <option value="">Selecciona Rol</option>
+        {roles.map((rol) => (
+          <option key={rol.id} value={rol.id}>{rol.nombre}</option>
+        ))}
+      </select>
+      <input name="nombre" placeholder="Nombre completo" value={formData.nombre} onChange={handleChange} style={inputStyle} />
+      <input name="correo_electronico" type="email" placeholder="Correo electrónico" value={formData.correo_electronico} onChange={handleChange} style={inputStyle} />
+      <input name="contrasena" type="password" placeholder="Contrasena" value={formData.contrasena} onChange={handleChange} style={inputStyle} />
+      <input name="programa" placeholder="Programa académico" value={formData.programa} onChange={handleChange} style={inputStyle} />
+      <input name="eps" placeholder="EPS" value={formData.eps} onChange={handleChange} style={inputStyle} />
+      <input name="peso_inicial" type="number" placeholder="Peso inicial (kg)" value={formData.peso_inicial} onChange={handleChange} style={inputStyle} />
+      <select name="id_horario_laboral" value={formData.id_horario_laboral} onChange={handleChange} style={inputStyle}>
+        <option value="">Selecciona Horario (si aplica)</option>
+        {horarios.map((horario) => (
+          <option key={horario.id} value={horario.id}>{horario.descripcion}</option>
+        ))}
+      </select>
+      <button type="submit" /* estilos */>Enviar registro</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {registroExitoso && <p style={{ color: 'green' }}>¡Registro exitoso! Inicia sesión.</p>}
+    </form>
+  );
+}
+
+
+==================================================================
+RUTA: ./src/hooks/useAuth.js
+==================================================================
+
+import { useState, useEffect } from "react";
+import api from "../api";
+
+// ✅ Función que decodifica el token JWT
+export const decodeJwt = (token) => {
+  try {
+    const parts = String(token || "").split(".");
+    const payload = parts[1];
+    if (!payload) return null;
+
+    let base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const pad = base64.length % 4;
+    if (pad) base64 += "=".repeat(4 - pad);
+
+    const json = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(json);
+  } catch (err) {
+    console.error("decodeJwt error:", err);
+    return null;
+  }
+};
+
+export const useAuth = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // 🚀 Obtiene datos actualizados del usuario (si existe token)
+  async function fetchUser() {
+    try {
+      const res = await api.get("/me"); // debe devolver los datos del usuario actual
+      setUser(res.data);
+      localStorage.setItem("user", JSON.stringify(res.data)); // 🔥 Guarda copia local
+    } catch (err) {
+      console.error("fetchUser error:", err);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // 🧠 Efecto inicial: revisa si hay token y usuario guardado
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser)); // ⚡ carga usuario local
+      setLoading(false);
+    }
+
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    const decoded = decodeJwt(token);
+
+    // Si el token es válido, intenta refrescar datos desde el backend
+    if (decoded) {
+      fetchUser();
+    } else {
+      // Token inválido → limpiar
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setUser(null);
+      setLoading(false);
+    }
+  }, []);
+
+  // 🔐 Login que guarda token + usuario
+const login = async (correo, password) => {
+  try {
+    const res = await api.post("/login", {
+      correo_electronico: correo,
+      password,
+    });
+
+    console.log("🧠 Respuesta completa del backend:", res.data);
+
+    const { token, user } = res.data;
+
+    if (!user) {
+      alert("⚠️ El backend no devolvió el objeto 'user'. Revisa la consola del backend.");
+      return;
+    }
+
+    // ✅ Guarda token y usuario completo en localStorage
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    // ✅ Actualiza estado del usuario en React
+    setUser(user);
+
+  } catch (error) {
+    console.error("Error en login:", error.response?.data || error.message);
+    alert("Error al iniciar sesión. Revisa tus credenciales o el backend.");
+  }
+};
+
+
+  // 🧾 Registro (opcional)
+  const register = async (data) => {
+    await api.post("/register", data);
+  };
+
+  // 🚪 Logout
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.href = "/gym";
+  };
+
+  return { user, loading, login, register, logout };
+};
+
+
+
+==================================================================
+RUTA: ./src/index.css
+==================================================================
+
+
+
+@import "tailwindcss";
+
+
